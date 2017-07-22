@@ -17,14 +17,16 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
 
 # import libraries
-import datetime
 import urllib.request
+from datetime import datetime
 
 
 class record_radio:
+    DURATION = 0
 
     def __init__(self, stream_url):
         self.stream_url = stream_url
+        self.init()
 
     def __enter__(self):
         print('__enter__')
@@ -33,7 +35,18 @@ class record_radio:
         print('__exit__')
 
     def init(self):
-        print("init")
+        h = int(datetime.utcnow().strftime("%I"))
+        day = int(datetime.utcnow().strftime("%A"))
+        if h == 2:
+            self.DURATION = 4
+        elif h == 4:
+            self.DURATION = 2
+        elif h == 12 and day != 'Saturday':
+            self.DURATION = 3
+        elif h == 19 and day != 'Saturday':
+            self.DURATION = 2
+        else:
+            self.DURATION = 0
 
     def start(self):
         print("start")
@@ -45,15 +58,18 @@ class record_radio:
         print("finish")
 
     def record_radio(self):
-        d = datetime.date.today()
-        filename = "recording" + d.strftime("%Y%m%d")+".ogg"
-        stream = urllib.request.urlopen(self.stream_url)
-        start_time = datetime.datetime.now()
-        dest = open(filename, 'wb')
-        while (datetime.datetime.now() - start_time).seconds <= 30:
-            print((datetime.datetime.now() - start_time).seconds)
-            dest.write(stream.read(1024))
-        return filename
+        if self.DURATION != 0:
+            d = datetime.now()
+            filename = "recording__" + d.strftime("%b-%d-%Y__%I:%M%p")+".ogg"
+            stream = urllib.request.urlopen(self.stream_url)
+            start_time = datetime.now()
+            dest = open(filename, 'wb')
+            while (datetime.now() - start_time).seconds / 3600 <= self.DURATION:
+                #print((datetime.datetime.now() - start_time).seconds / 3600)
+                dest.write(stream.read(1024))
+            return filename
+        else:
+            return None
 
 
 
