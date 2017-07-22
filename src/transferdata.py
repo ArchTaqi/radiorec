@@ -20,8 +20,9 @@ class TransferData:
             with open(file_from, 'rb') as f:
                 meta = client.files_upload(f.read(), file_to, mute=True)
             print("Uploaded " + file_to)
-        except:
+        except Exception as e:
             print("Failed to upload " + file_to)
+            print(e)
 
     def get_account_info(self):
         """
