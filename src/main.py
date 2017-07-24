@@ -15,9 +15,9 @@ def upload(file_name):
 
 
 def main():
-    record_now = os.environ.get('record_now')
-    record_now_duration = os.environ.get('record_now_duration')
-    if record_now is not None and record_now_duration > 0:
+    record_now = int(os.environ.get('record_now'))
+    record_now_duration = int(os.environ.get('record_now_duration'))
+    if record_now != 0 and record_now_duration > 0:
         print('Record Now')
         radio_record = record_radio('http://audio.samaafm.com:8008/1')
         radio_record.start(record_now_duration)
