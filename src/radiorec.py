@@ -36,7 +36,7 @@ class record_radio:
 
     def init(self):
         h = int(datetime.utcnow().strftime("%I"))
-        day = int(datetime.utcnow().strftime("%A"))
+        day = str(datetime.utcnow().strftime("%A"))
         if h == 2:
             self.DURATION = 2
         elif h == 4:
@@ -48,7 +48,10 @@ class record_radio:
         else:
             self.DURATION = 0
 
-    def start(self):
+    def start(self, duration):
+        if duration > 0:
+            self.DURATION = duration
+
         print("start")
 
     def stop(self):
