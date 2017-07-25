@@ -16,7 +16,7 @@ def upload(file_name):
 
 def main():
     record_now = int(os.environ.get('record_now'))
-    record_now_duration = int(os.environ.get('record_now_duration'))
+    record_now_duration = float(os.environ.get('record_now_duration'))
     if record_now != 0 and record_now_duration > 0:
         print('Record Now')
         radio_record = record_radio('http://audio.samaafm.com:8008/1')
@@ -24,7 +24,7 @@ def main():
         file_name = radio_record.record_radio()
         upload(file_name)
     else:
-        day = int(dt.utcnow().strftime("%A"))
+        day = str(dt.utcnow().strftime("%A"))
         if day != 'Sunday':
             radio_record = record_radio('http://audio.samaafm.com:8008/1')
             file_name = radio_record.record_radio()
