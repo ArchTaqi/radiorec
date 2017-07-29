@@ -49,7 +49,7 @@ class Radio(object):
         if file_name is not None:
             drop_box_access_token = self.ACCESS_TOKEN
             target_dir = self.TARGET_DIR
-            upload_to = target_dir + os.sep + file_name
+            upload_to = target_dir + os.sep + os.path.basename(file_name)
             transfer_data = TransferData(drop_box_access_token, logging)
             transfer_data.get_account_info()
             try:
