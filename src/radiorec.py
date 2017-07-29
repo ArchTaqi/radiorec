@@ -17,15 +17,20 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
 
 # import libraries
+import os
 import urllib.request
 from datetime import datetime
 
 
 class record_radio:
     DURATION = 0
+    logging = None
+    __location__ = os.path.realpath(
+        os.path.join(os.getcwd(), os.path.dirname(os.path.dirname(__file__))))
 
-    def __init__(self, stream_url):
+    def __init__(self, stream_url, logging):
         self.stream_url = stream_url
+        self.logging = logging
         self.init()
 
     def __enter__(self):
@@ -63,16 +68,18 @@ class record_radio:
     def record_radio(self):
         if self.DURATION != 0:
             d = datetime.now()
-            filename = "recording__" + d.strftime("%b-%d-%Y__%I:%M%p")+".ogg"
+            filename = os.path.join(self.__location__, "recording__" + d.strftime("%b-%d-%Y__%I:%M%p") + ".ogg")
             stream = urllib.request.urlopen(self.stream_url)
             start_time = datetime.now()
-            dest = open(filename, 'wb')
-            while (datetime.now() - start_time).seconds / 3600 <= self.DURATION:
-                #print((datetime.datetime.now() - start_time).seconds / 3600)
-                dest.write(stream.read(1024))
-            return filename
+            destination = open(filename, 'wb')
+            print(filename)
+            try:
+                while (datetime.now() - start_time).seconds / 3600 <= self.DURATION:
+                    destination.write(stream.read(1024))
+                self.logging.info("Recorded File : " + filename)
+                return filename
+            except Exception as e:
+                self.logging.info(e)
+                return None
         else:
             return None
-
-
-
